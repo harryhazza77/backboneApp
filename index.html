@@ -7,15 +7,15 @@
 </head>
 <body>
 <div id="books">
-    <div class="bookContainer">
-        <img src="img/image1.png"/>
+    <script id="bookTemplate" type="text/template">
+        <img src="<%= coverImage %>" />
         <ul>
-            <li>Title</li>
-            <li>Author</li>
-            <li>Release Date</li>
-            <li>Keywords</li>
+            <li><%= title %></li>
+            <li><%= author %></li>
+            <li><%= releaseDate %></li>
+            <li><%= keywords %></li>
         </ul>
-    </div>
+    </script>
 </div>
 <script src="js/jquery-1.9.1.min.js"></script>
 <script src="js/underscore-min.js"></script>

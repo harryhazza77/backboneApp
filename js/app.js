@@ -23,13 +23,41 @@
         }
     });
 
-    var book = new Book({
-        title: "My Book",
-        author: "Harry Patel"
+    var Library = Backbone.Collection.extend({
+        model: Book
     });
 
-    var bookView = new BookView({model: book});
+    var books = [
+        {title: "book1"},
+        {title: "book2"},
+        {title: "book3"},
+        {title: "book4"},
+        {title: "book5"}
+    ];
 
-    $("#books").html(bookView.render().el);
+    var LibraryView = Backbone.View.extend({
+        el: $("#books"),
+
+        initialize: function () {
+            this.collection = new Library(books);
+            this.render();
+        },
+
+        render: function () {
+            var that = this;
+            _.each(this.collection.models, function (item) {
+                that.renderBook(item);
+            }, this);
+        },
+
+        renderBook: function (item) {
+            var bookView = new BookView({
+                model: item
+            });
+            this.$el.append(bookView.render().el);
+        }
+    });
+
+    var libraryView = new LibraryView();
 
 })(jQuery);

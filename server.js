@@ -5,12 +5,20 @@ var application_root = __dirname,
     app = express();
 //    app = express.createServer();
 
+
+// MONGO SETUP
 mongoose.connect('mongodb://localhost/library_database');
 
+var Keywords = new mongoose.Schema({
+    keyword: String
+});
+
+//
 var Book = new mongoose.Schema({
     title: String,
     author: String,
-    releaseDate: Date
+    releaseDate: Date,
+    keywords: [Keywords]
 });
 
 var BookModel = mongoose.model('Book', Book);
@@ -51,7 +59,8 @@ app.post('/api/books', function (req, res) {
     var book = new BookModel({
         title: req.body.title,
         author: req.body.author,
-        releaseDate: req.body.releaseDate
+        releaseDate: req.body.releaseDate,
+        keywords: req.body.keywords
     });
     book.save(function (err) {
         if (!err) {
@@ -67,7 +76,8 @@ app.put('/api/books/:id', function (req, res) {
     return BookModel.findByIdAndUpdate(req.params.id, { $set: {
         title: req.body.title,
         author: req.body.author,
-        releaseDate: req.body.releaseDate }}, function (err) {
+        releaseDate: req.body.releaseDate,
+        keywords: req.body.keywords}}, function (err) {
         if (!err) {
             console.log('updated');
         } else {
@@ -92,30 +102,31 @@ app.listen(4711, function () {
 
 /*
 
-ADD
- jQuery.post("/api/books", { "title":"JavaScript the good parts", "author":"Douglas Crockford", "releaseDate":new Date(2008, 4, 1).getTime()
+ ADD
+ jQuery.post("/api/books", { "title":"JavaScript the good parts", "author":"Douglas Crockford", "releaseDate":new Date(2008, 4, 1).getTime(),
+ "keywords":[{"keyword":"Javascript"},{"keyword":"Reference"}]
  }, function(data, textStatus, jqXHR) { console.log("Post response:"); console.dir(data); console.log(textStatus); console.dir(jqXHR);
  });
 
-GET BY ID
+ GET BY ID
  jQuery.get("/api/books/4f95a8cb1baa9b8a1b000006", function (data, textStatus, jqXHR){ console.log("Get response:");
  console.dir(data);
  console.log(textStatus);
  console.dir(jqXHR); });
 
-GET ALL
+ GET ALL
  jQuery.get("/api/books/", function (data, textStatus, jqXHR) { console.log("Get response:");
  console.dir(data);
  console.log(textStatus);
  console.dir(jqXHR); });
 
-EDIT
+ EDIT
  jQuery.ajax({ url:"/api/books/4f95a8cb1baa9b8a1b000006", type:"PUT",
  data:{
  "title":"JavaScript The good parts", "author":"The Legendary Douglas Crockford", "releaseDate":new Date(2008, 4, 1).getTime()
  },
 
-DELETE
+ DELETE
  jQuery.ajax({ url:"/api/books/5171c10417da2e1d35000001", type:"DELETE",
  success: function(data, textStatus, jqXHR) {
  console.log("Post response:"); console.dir(data); console.log(textStatus); console.dir(jqXHR);
